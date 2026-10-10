@@ -478,52 +478,6 @@ export const botConfig = {
 };
 
 
-
-intents = discord.Intents.default()
-intents.message_content = True
-
-bot = commands.Bot(command_prefix='.', intents=intents)
-
-# Store AFK users and their reasons
-afk_users = {}
-
-@bot.event
-async def on_ready():
-    print(f'Logged in as {bot.user}')
-
-@bot.event
-async def on_message(message):
-    if message.author.bot:
-        return
-
-    # Remove AFK status if user sends a message
-    if message.author.id in afk_users:
-        del afk_users[message.author.id]
-        await message.channel.send(f"Welcome back {message.author.mention}, I have removed your AFK status.")
-
-    # Notify if mentioned user is AFK
-    for user in message.mentions:
-        if user.id in afk_users:
-            reason = afk_users[user.id]
-            embed = discord.Embed(
-                description=f"**{user.name}** is currently AFK: {reason}",
-                color=discord.Color.orange()
-            )
-            await message.channel.send(embed=embed)
-
-    await bot.process_commands(message)
-
-@bot.command()
-async def afk(ctx, *, reason: str = "No reason provided"):
-    afk_users[ctx.author.id] = reason
-    embed = discord.Embed(
-        title="AFK Status Set",
-        description=f"{ctx.author.mention} is now AFK.\n**Reason:** {reason}",
-        color=discord.Color.blue()
-    )
-    await ctx.send(embed=embed)
-
-
 export function validateConfig(config) {
   const errors = [];
 
